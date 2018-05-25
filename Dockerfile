@@ -10,6 +10,7 @@ RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
       libmysqlclient-dev \
       ruby-full \
       nodejs \
+      libpng-dev \
     && rm -r /var/lib/apt/lists/* \
     && docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
     && docker-php-ext-install \
@@ -22,6 +23,7 @@ RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
       pdo_pgsql \
       pgsql \
       zip \
+      gd \
       opcache
 
 # Install composer
@@ -47,7 +49,7 @@ RUN curl -fsSL 'https://xdebug.org/files/xdebug-2.4.0.tgz' -o xdebug.tar.gz \
 
 # Put apache config
 COPY build/apache-vhost.conf /etc/apache2/sites-available/custom-vhost.conf
-RUN a2dissite 000-default.conf && a2ensite custom-vhost.conf && a2enmod rewrite
+RUN a2dissite 000-default.conf && a2ensite custom-vhost.conf && a2enmod rewrite && a2enmod ssl
 
 # Change uid and gid of apache to docker user uid/gid
 RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
