@@ -1,22 +1,36 @@
-FROM php:7.0-apache
+FROM php:7.2-apache-stretch
 
 # Install PHP extensions
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
     && apt-get update && apt-get install -y \
       libicu-dev \
       libpq-dev \
-      libmcrypt-dev \
-      mysql-client \
-      libmysqlclient-dev \
+      libfreetype6 \
+      mariadb-client \
+      libmariadbclient-dev \
       ruby-full \
       nodejs \
+      libzip-dev \
+      zip \
       libpng-dev \
+      libwebp-dev \
+      libjpeg62-turbo-dev \
+      libxpm-dev \
+      libfreetype6-dev \
+    && docker-php-ext-configure zip --with-libzip \
+    && docker-php-ext-configure gd \
+      --with-gd \
+      --with-webp-dir \
+      --with-jpeg-dir \
+      --with-png-dir \
+      --with-zlib-dir \
+      --with-xpm-dir \
+      --with-freetype-dir=/usr/lib/x86_64-linux-gnu/ \
     && rm -r /var/lib/apt/lists/* \
     && docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
     && docker-php-ext-install \
       intl \
       mbstring \
-      mcrypt \
       mysqli \
       pcntl \
       pdo_mysql \
@@ -33,7 +47,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 RUN su -c "gem install sass"
 
 # Install Xdebug
-RUN curl -fsSL 'https://xdebug.org/files/xdebug-2.4.0.tgz' -o xdebug.tar.gz \
+RUN curl -fsSL 'https://xdebug.org/files/xdebug-2.7.2.tgz' -o xdebug.tar.gz \
     && mkdir -p xdebug \
     && tar -xf xdebug.tar.gz -C xdebug --strip-components=1 \
     && rm xdebug.tar.gz \
