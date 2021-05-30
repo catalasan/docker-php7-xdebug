@@ -1,4 +1,4 @@
-FROM php:7.4.19-apache-buster
+FROM php:8.0.6-apache-buster
 
 # Install PHP extensions
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
